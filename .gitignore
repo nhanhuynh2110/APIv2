@@ -1,0 +1,10 @@
+# Node rules:
+
+## Dependency directory
+## Commenting this out is preferred by some people, see
+node_modules
+dist
+package-lock.json
+.env
+npm-debug.log
+/uploads
