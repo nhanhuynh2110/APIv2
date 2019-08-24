@@ -3,7 +3,7 @@ var config = {
   user: 'root',
   // password: 'brigandine',
   password: 'nhanhuynh',
-  database: 'wland1'
+  database: 'wland'
 }
 
 module.exports = config

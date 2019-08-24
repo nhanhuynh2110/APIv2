@@ -9,6 +9,7 @@ router.use(function (err, req, res, next) {
 require('./user')(router)
 require('./advertise')(router)
 require('./category')(router)
+require('./categoryPost')(router)
 require('./blog')(router)
 require('./home')(router)
 require('./common')(router)
