@@ -1,9 +1,8 @@
 var express = require('express')
 var router = express.Router()
 
-router.use(function (err, req, res, next) {
-  console.error(err)
-  res.status(500).json({ message: `Something broke!` })
+router.use(function(err, req, res, next) {
+    res.status(500).json({ message: `Something broken!` })
 })
 
 require('./user')(router)
@@ -14,7 +13,7 @@ require('./blog')(router)
 require('./home')(router)
 require('./common')(router)
 require('./account')(router)
-// require('./account_common')(router)
+    // require('./account_common')(router)
 require('./video')(router)
 require('./partner')(router)
 require('./home_content')(router)
@@ -26,5 +25,6 @@ require('./product')(router)
 require('./category_news')(router)
 require('./category_product')(router)
 require('./news')(router)
+require('./post')(router)
 
 module.exports = router

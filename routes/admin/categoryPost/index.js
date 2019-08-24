@@ -7,6 +7,14 @@ const Models = require('../../../model/mongo')
 const {CategoryPost} = Models
 
 module.exports = (router) => {
+  router.get('/category-posts', authUser.checkTokenAdmin, (req, res) => {
+    try {
+      CategoryPost.find({ isActive: true, isDelete: false }, (error, data) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        return utility.apiResponse(res, 200, 'success', data)
+      })
+    } catch (error) { utility.apiResponse(res, 500, error.toString()) }
+  })
   router.get('/category-post', authUser.checkTokenAdmin, (req, res) => {
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
