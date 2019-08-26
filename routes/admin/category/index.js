@@ -7,6 +7,14 @@ const Models = require('../../../model/mongo')
 const {Category} = Models
 
 module.exports = function (router) {
+  router.get('/categories', authUser.checkTokenAdmin, (req, res) => {
+    try {
+      Category.find({ isActive: true, isDelete: false }, (error, data) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        return utility.apiResponse(res, 200, 'success', data)
+      })
+    } catch (error) { utility.apiResponse(res, 500, error.toString()) }
+  })
   router.get('/category', authUser.checkTokenAdmin, (req, res) => {
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
@@ -43,14 +51,8 @@ module.exports = function (router) {
 
   router.post('/category', authUser.checkTokenAdmin, (req, res) => {
     try {
-      let {body} = req
-      let {title, isActive, isHome} = body
-      let category = new Category({
-        title,
-        isActive,
-        isHome,
-        isDelete: false
-      })
+      let dt = req.body
+      let category = new Category(dt)
       var error = category.validateSync()
 
       if (error) {

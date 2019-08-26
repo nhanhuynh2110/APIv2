@@ -8,12 +8,28 @@ const permisions = {
       { key: 'USEREDIT', text: 'Edit' }
     ]
   },
+  account: {
+    label: 'Account',
+    role: [
+      { key: 'ACCOUNTVIEW', text: 'View' },
+      { key: 'ACCOUNTADD', text: 'Add' },
+      { key: 'ACCOUNTEDIT', text: 'Edit' }
+    ]
+  },
   category: {
     label: 'Category',
     role: [
       { key: 'CATEGORYVIEW', text: 'View' },
       { key: 'CATEGORYADD', text: 'Add' },
       { key: 'CATEGORYEDIT', text: 'Edit' }
+    ]
+  },
+  post: {
+    label: 'Post',
+    role: [
+      { key: 'POSTVIEW', text: 'View' },
+      { key: 'POSTADD', text: 'Add' },
+      { key: 'POSTEDIT', text: 'Edit' }
     ]
   }
 }
