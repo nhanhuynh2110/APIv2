@@ -5,6 +5,7 @@ var io = require('socket.io')(server)
 var path = require('path')
 var fs = require('fs')
 var sha1 = require('sha1')
+
 require('./config/appConfig')(app)
 let config = require('./config/config')
 
@@ -30,11 +31,9 @@ function isImageValid (filename, mimetype) {
 
 app.post('/upload', function (req, res) {
   var { folder } = req.query
-  console.log('folder', folder)
   var _dir = path.join(`${global.rootDirectory}/uploads`)
   if (req.query.folder) {
     _dir = path.join(`${global.rootDirectory}/uploads/${folder}`)
-    console.log('req.query.folder', `${global.rootDirectory}/uploads/${folder}`)
     if (!fs.existsSync(_dir)) {
       fs.mkdirSync(_dir)
     }
@@ -80,7 +79,6 @@ app.post('/upload', function (req, res) {
 
   // once all the files have been uploaded, send a response to the client
   form.on('end', function () {
-    console.log('fileRoute + randomName', fileRoute + randomName)
     res.status(200).json({
       status: 200,
       message: 'success',

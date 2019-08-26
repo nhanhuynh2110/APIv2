@@ -1,4 +1,3 @@
-var config = require('./config')
 var bodyParser = require('body-parser')
 var autController = require('../controller/authenticate/aut')
 var express = require('express')

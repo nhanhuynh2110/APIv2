@@ -1,99 +1,83 @@
-var mysql = require('../../../model/mysql')
-var models = require('../../../model/mongo/index')
+const _ = require('lodash')
+const async = require('async')
+var Models = require('../../../model/mongo/index')
 var sha256 = require('sha256')
 var authUser = require('../../../controller/authenticate/autuser')
 var utility = require('../../../helper/utility')
-var permissionDefine = require('../../../helper/permission/permission_define')
-var { getPermissions } = require('../../../helper/permission/hasPermissions')
+const { hasPermissions } = require('../../../helper/permissions')
+// var permissionDefine = require('../../../helper/permission/permission_define')
+// var { getPermissions } = require('../../../helper/permission/hasPermissions')
 
 var validateUser = (req, res, next) => {
-  console.log('req', req.query)
-  if (!req.query.username) {
-    next(res.status(500).json({message: 'please enter username'}))
-  }
-
-  if (!req.query.password) {
-    next(res.status(500).json({message: 'please enter password'}))
-  }
-  next()
+  const {username, password} = req.query
+  if (!username || !password) next(res.status(500).json({message: 'please enter username or password'}))
+  else next()
 }
 
 module.exports = (router) => {
   router.get('/login', validateUser, function (req, res) {
     try {
       var ip = req.connection.remoteAddress
-      var user = req.query.username
-      var pass = sha256(req.query.password)
-      if (user === '') utility.apiResponse(res, 500, 'request invalid')
-      var accountModel = new mysql.service.account()
-      accountModel.conditionFields({ is_active: 1, is_delete: 0, username: user, password: pass })
-      accountModel.whereItem(function (err, result) {
-        if (err) utility.apiResponse(res, 500, 'server error')
-        else {
-          if (result) {
-            var data = result
-            data.token = authUser.getToken(user, pass)
-            data.permissionDefine = permissionDefine
-            data.permissions = getPermissions()
-            models.User.create(data, ip, (err, user) => {
-              if (err) return utility.apiResponse(res, 500, 'can\'t get token')
-              delete data['password']
-              delete data['id']
-              return res.status(200).json({ status: 200, message: 'success', data })
-            })
-          } else return utility.apiResponse(res, 500, 'User not found')
-        }
+      var {username, password} = req.query
+      const user = (cb) => {
+        Models.User.findOne({ username, password: sha256(password), isActive: true, isDelete: false }, (err, user) => {
+          if (err) return cb(err)
+          return cb(null, user)
+        })
+      }
+
+      const role = (user, cb) => {
+        if (!user) return cb(new Error('user invalid'))
+        Models.Role.findOne({_id: user.roleId, isActive: true, isDelete: false}, (err, role) => {
+          let token = authUser.getToken(username, password)
+          var data = {
+            token: token,
+            _id: user._id,
+            roleId: user.roleId,
+            username: user.username,
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            birthdate: user.birthdate,
+            address: user.address,
+            gender: user.gender,
+            identityCard: user.identityCard,
+            updateDate: user.updateDate,
+            createDate: user.createDate,
+            activeDate: user.activeDate,
+            isDelete: user.isDelete,
+            isActive: user.isActive
+          }
+          if (err) return cb(null, data)
+          data.permissions = hasPermissions(role.permissions)
+          return cb(null, data)
+        })
+      }
+
+      async.waterfall([user, role], (error, user) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        let newToken = new Models.Token({
+          username,
+          userId: user._id,
+          token: user.token,
+          ip: ip
+        })
+        newToken.save((err) => {
+          if (err) return utility.apiResponse(res, 500, 'can\'t get token')
+          return res.status(200).json({ status: 200, message: 'success', user })
+        })
       })
     } catch (error) {
-      return utility.apiResponse(res, 500, 'Server error')
+      return utility.apiResponse(res, 500, error.toString())
     }
   })
 
   router.get('/logout', (req, res) => {
     let idtoken = req.query.disconnect
 
-    models.User.findOneAndRemove({ _id: idtoken }, (err, data) => {
-      if (err) {
-        res.status(500).json({message: 'server error'})
-      }
-      res.status(200).json({message: 'success'})
+    Models.Token.findOneAndRemove({ _id: idtoken }, (err, data) => {
+      if (err) return utility.apiResponse(res, 500, 'Server error')
+      return res.status(200).json({message: 'success'})
     })
   })
-
-  router.get('/get-user', authUser.checkTokenAdmin, function (req, res) {
-    var username = req.query.username
-    var accountModel = new mysql.service.account()
-    accountModel.conditionFields({ is_active: 1, is_delete: 0, username: username })
-    accountModel.whereItem((err, result) => {
-      if (err) utility.apiResponse(res, 500, 'server error')
-      if (result) {
-        var data = result
-        data.token = req.query.token
-        delete data['password']
-        delete data['id']
-        data.permissions = getPermissions()
-        getPemrisionsUser(result.type, (err, response) => {
-          if (err) return utility.apiResponse(res, 500, 'Permissions error')
-          data.permissionsUser = response && response.permissions ? response.permissions : null
-          return utility.apiResponse(res, 200, 'success', data)
-        })
-      } else {
-        return utility.apiResponse(res, 500, 'User not found')
-      }
-    })
-  })
-}
-
-let getPemrisionsUser = (code, cb) => {
-  try {
-    let GroupPermissions = new mysql.service.GroupPermissions()
-    GroupPermissions.conditionFields({ code: code })
-    GroupPermissions.whereItem((err, result) => {
-      if (err) return cb(err)
-      if (!result) return cb(null, null)
-      return cb(null, result)
-    })
-  } catch (error) {
-    return cb(error)
-  }
 }
