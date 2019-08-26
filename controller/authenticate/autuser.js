@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken')
 // var CryptoJS = require('cryptojs')
 var sha256 = require('sha256')
-var models = require('../../model/mongo')
+var Models = require('../../model/mongo')
 
 var getToken = (username, password) => {
   var now = Date.now()
@@ -18,19 +18,17 @@ var getToken = (username, password) => {
 }
 
 var checkToken = (req, res, next) => {
-  if (req.body.token || req.headers['token'] || req.query.token) {
+  if (req.body['token'] || req.headers['token'] || req.query['token']) {
     var token = req.body['token'] || req.headers['token'] || req.query['token']
     var ip = req.connection.remoteAddress
-    models.User.findOne({token, ip}, (err, user) => {
+    Models.Token.findOne({token, ip}, (err, mytoken) => {
       if (err) return res.status(500).json({message: 'server error'})
-      if (user) {
-        req['user'] = user
+      if (mytoken) {
+        req['token'] = token
         next()
       } else return res.status(500).json({message: 'token is not valid'})
     })
-  } else {
-    return res.status(404).json({ message: 'token is not valid' })
-  }
+  } else return res.status(404).json({ message: 'token is not valid' })
 }
 
 exports.getToken = getToken
