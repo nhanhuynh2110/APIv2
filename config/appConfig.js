@@ -10,7 +10,7 @@ module.exports = (app) => {
 
   // const role = new Models.Role({
   //   title: 'Master',
-  //   permissions: ['CATEGORYVIEW'],
+  //   permissions: ['CATEGORYVIEW', 'POSTVIEW', 'ACCOUNTVIEW'],
   //   isActive: true
   // })
 
