@@ -4,7 +4,7 @@ const {Schema} = mongoose
 
 const model = new Schema({
   title: { type: String, trim: true, required: true },
-  logo: { type: String, trim: true },
+  img: { type: String, trim: true },
   link: { type: String, trim: true },
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },

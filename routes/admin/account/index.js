@@ -1,131 +1,90 @@
+var async = require('async')
+var sha256 = require('sha256')
+var ObjectId = require('mongoose').Types.ObjectId
+
 var authUser = require('../../../controller/authenticate/autuser')
 var utility = require('../../../helper/utility')
-var lib = require('./lib')
-module.exports = function (router) {
-  router.get('/account/grid', authUser.checkTokenAdmin, (req, res) => {
-    try {
-      var obj = {
-        searchKey: req.query.strKey,
-        pageSize: req.query.pageSize,
-        pageNumber: req.query.pageNumber,
-        columnsSearch: req.query.columnsSearch,
-        colSort: req.query.colSort,
-        typeSort: req.query.typeSort,
-        isDel: req.query.isDel
-      }
-      lib.grid(res, obj)
-    } catch (error) { utility.apiResponse(res, 500, 'Server error', null) }
-  })
+const Models = require('../../../model/mongo')
+const {User} = Models
 
-  router.post('/account/form', authUser.checkTokenAdmin, (req, res) => {
+module.exports = function(router) {
+  router.get('/user', (req, res) => {
     try {
-      if (!req.body.action || req.body.action === null || (req.body.action !== 'create' && req.body.action !== 'edit')) {
-        global.logger.error('account : action invalid ' + req.body.action)
-        res.status(500).json({ status: 500, message: 'action doesn\'t exits' })
-        res.end()
-      } else if (!req.body.username || req.body.username === null || req.body.username.trim() === '') {
-        global.logger.error('account : username invalid ' + req.body.action)
-        res.status(500).json({ status: 500, message: 'username not empty' })
-        res.end()
-      } else if (!req.body.email || req.body.email === null) {
-        global.logger.error('account : email invalid ' + req.body.action)
-        res.status(500).json({ status: 500, message: 'email not empty' })
-        res.end()
-      } else if (!req.body.is_active || req.body.is_active === null || (parseInt(req.body.is_active) !== 1 && parseInt(req.body.is_active) !== 0)) {
-        global.logger.error('account : is_active invalid ' + req.body.action)
-        res.status(500).json({ status: 500, message: 'active not empty' })
-        res.end()
-      } else if (!req.body.is_delete || req.body.is_delete === null || (parseInt(req.body.is_delete) !== 1 && parseInt(req.body.is_delete) !== 0)) {
-        global.logger.error('account : is_delete invalid ' + req.body.action)
-        res.status(500).json({ status: 500, message: 'delete not empty' })
-        res.end()
-      } else {
-        var action = req.body.action
-        switch (action) {
-          case 'create':
-            lib.insertRow(res, req.body)
-            break
-          case 'edit':
-            lib.updateRow(res, req.body)
-            break
-          default:
-            global.logger.error('account : request invalid ')
-            utility.apiResponse(res, 500, 'request invalid')
-        }
+      const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
+      const query = {}
+      const sort = colSort && typeSort ? { [colSort]: typeSort === 'asc' ? 1 : -1 } : null
+      if (strKey) { query['$text'] = { $search: strKey } }
+      query['isDelete'] = isDelete === 'true'
+      const total = (cb) => {
+        User.count(query, (err, data) => cb(err, data))
       }
+
+      const list = (cb) => {
+        let skip = parseInt(pageSize) * (parseInt(pageNumber) - 1)
+        let limit = parseInt(pageSize)
+        User.find(query, (err, users) => cb(err, users)).skip(skip).limit(limit).sort(sort)
+      }
+
+      async.parallel({ total, list }, (error, data) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        return utility.apiResponse(res, 200, 'success', data)
+      })
+    } catch (error) {
+      return utility.apiResponse(res, 500, error.toString())
+    }
+  })
+  router.get('/user/:id', (req, res) => {
+    try {
+      let {id} = req.params
+      User.findOne({_id: ObjectId(id)}, (error, data) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        console.log('data', data)
+        return utility.apiResponse(res, 200, 'success', data)
+      })
+    } catch (error) { return utility.apiResponse(res, 500, error, null) }
+  })
+  router.post('/user', (req, res) => {
+    try {
+      let dt = req.body
+      dt['password'] = sha256(dt['password'])
+      let user = new User(dt)
+      var error = user.validateSync()
+
+      if (error) {
+        var errorKeys = Object.keys(error.errors)
+        return utility.apiResponse(res, 500, error.errors[errorKeys[0].message].toString())
+      }
+
+      user.save((err, data) => {
+        if (err) return utility.apiResponse(res, 500, err.toString())
+        return utility.apiResponse(res, 200, 'success', data)
+      })
     } catch (e) {
-      global.logger.error('account : catch error ' + e.toString())
-      res.status(500).json({ message: `server error` })
+      return utility.apiResponse(res, 500, 'server error')
     }
   })
-
-  /**
-   * method: get
-   * params: code: String
-   */
-  router.get('/account/code', authUser.checkTokenAdmin, (req, res) => {
+  router.put('/user/:id', (req, res) => {
     try {
-      var code = req.query.code
-      lib.getByCode(res, code)
-    } catch (error) { utility.apiResponse(res, 500, error, null) }
-  })
-
-  router.get('/account/update', authUser.checkTokenAdmin, (req, res) => {
-    try {
-      var { data } = req.query
-      if (!data) utility.apiResponse(res, 500, 'request invalid', null)
-      var obj = JSON.parse(data)
-      var { condition, field } = obj
-
-      if (!condition || !field) utility.apiResponse(res, 500, 'request invalid', null)
-      lib.update(res, condition, field)
+      let field = req.body
+      field['password'] = sha256(field['password'])
+      delete field.id
+      User.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, {new: true}, (err, data) => {
+        if (err) return utility.apiResponse(res, 500, err.toString())
+        return utility.apiResponse(res, 200, 'success', data)
+      })
     } catch (err) {
-      utility.apiResponse(res, 500, err, null)
+      return utility.apiResponse(res, 500, err, null)
     }
   })
-
-  router.get('/account/delete', authUser.checkTokenAdmin, (req, res) => {
+  router.delete('/user/:id', (req, res) => {
     try {
-      var { code } = req.query
-      if (!code) utility.apiResponse(res, 500, 'Request invalid', null)
-      var condition = {
-        code: code
-      }
-      lib.delete(res, condition)
+      var { id } = req.params
+      User.deleteOne({_id: ObjectId(id)}, (err) => {
+        if (err) return utility.apiResponse(res, 500, err.toString())
+        return utility.apiResponse(res, 200, 'success', true)
+      })
     } catch (error) {
       utility.apiResponse(res, 500, 'Server error', null)
     }
   })
-
-  router.get('/account/check-username', authUser.checkTokenAdmin, (req, res) => {
-    try {
-      lib.checkUserOrEmail(res, req.query, 1)
-    } catch (error) { utility.apiResponse(res, 500, error, null) }
-  })
-
-  router.get('/account/check-email', authUser.checkTokenAdmin, (req, res) => {
-    try {
-      lib.checkUserOrEmail(res, req.query, 2)
-    } catch (error) { utility.apiResponse(res, 500, error, null) }
-  })
-
-  router.get('/account/checkPassword', authUser.checkTokenAdmin, (req, res) => {
-    try {
-      lib.checkPassword(res, req.query)
-    } catch (error) { utility.apiResponse(res, 500, error, null) }
-  })
-
-  router.get('/changePassword', (req, res) => {
-    try {
-      lib.changePassword(res, req.query)
-    } catch (error) { utility.apiResponse(res, 500, error, null) }
-  })
-
-  // router.get('./permission', authUser.checkTokenAdmin, (req, res) => {
-  //     try {
-  //         var code = req.query.code
-  //         lib.getByCode(res, code)
-  //         console.log('per', res, code)
-  //     } catch (error) { utility.apiResponse(res, 500, error, null) }
-  // })
 }
