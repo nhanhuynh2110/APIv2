@@ -90,9 +90,9 @@ app.post('/upload', function (req, res) {
   form.parse(req)
 })
 // app.listen(3100)
-app.get('/', function (req, res, next) {
-  res.sendFile(global.__dirname + '/index.html')
-})
+// app.get('/', function (req, res, next) {
+//   res.sendFile(global.__dirname + '/index.html')
+// })
 
 require('./socket/connection')(io)
 server.listen(3100, () => {
