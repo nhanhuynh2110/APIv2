@@ -3,7 +3,7 @@ const async = require('async')
 const utility = require('../../../helper/utility')
 const Models = require('../../../model/mongo')
 
-const { Category, Post } = Models
+const { Category, Post, Gallery } = Models
 
 module.exports = (router) => {
   router.get('/menu', (req, res) => {
@@ -22,13 +22,24 @@ module.exports = (router) => {
   })
   router.get('/homepage', (req, res) => {
     try {
+      const categories = (cb) => {
+        Category.find({ isActive: true, isDelete: false }, (err, categories) => {
+          return cb(err, categories)
+        })
+      }
       const posts = (cb) => {
         Post.find({ isActive: true, isDelete: false }, (err, posts) => {
           return cb(err, posts)
         })
       }
 
-      async.parallel({ posts }, (error, data) => {
+      const galleries = (cb) => {
+        Gallery.find({ isActive: true, isDelete: false }, (err, galleries) => {
+          return cb(err, galleries)
+        }).sort({createDate: -1}).limit(21)
+      }
+
+      async.parallel({ categories, posts, galleries }, (error, data) => {
         if (error) return utility.apiResponse(res, 500, error.toString())
         return utility.apiResponse(res, 200, 'Success', data)
       })
