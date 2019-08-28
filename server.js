@@ -51,15 +51,19 @@ app.post('/upload', function (req, res) {
   var link = ''
   var fileRoute = ''
   var randomName = ''
-  var filename = ''
+  var images = []
   form.on('file', function (field, file) {
-    // fileRoute = '/uploads/'
     fileRoute = '/'
     if (folder) fileRoute = fileRoute + folder + '/'
-    var id = sha1(new Date().getTime())
+    var id = sha1(new Date().getTime() + file.name)
     randomName = id + '.' + getExtension(file.name)
     // link = 'http://' + req.get('host') + fileRoute + randomName
     link = config.domain + fileRoute + randomName
+
+    images.push({
+      link,
+      img: fileRoute + randomName
+    })
     fs.rename(file.path, path.join(form.uploadDir, randomName), (err) => {
       if (err) throw new Error(err)
     })
@@ -69,11 +73,7 @@ app.post('/upload', function (req, res) {
   form.on('error', () => {
     res.status(500).json({
       status: 500,
-      message: `upload image ${filename} fail!`,
-      data: {
-        link: link,
-        img: fileRoute + randomName
-      }
+      message: `upload image  fail!`
     })
   })
 
@@ -82,10 +82,7 @@ app.post('/upload', function (req, res) {
     res.status(200).json({
       status: 200,
       message: 'success',
-      data: {
-        link: link,
-        img: fileRoute + randomName
-      }
+      data: images
     })
   })
 

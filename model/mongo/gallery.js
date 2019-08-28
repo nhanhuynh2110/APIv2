@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const {Schema} = mongoose
 
 const model = new Schema({
-  title: { type: String, trim: true, required: true },
-  img: { type: String, trim: true },
+  image: { type: String, trim: true },
   link: { type: String, trim: true },
   description: { type: String, trim: true },
   isActive: { type: Boolean, default: false },
@@ -15,14 +14,4 @@ const model = new Schema({
   updateDate: { type: Date, default: Date.now() }
 })
 
-model.index({
-  title: 'text',
-  createDate: 'text'
-}, {
-  weights: {
-    title: 5,
-    createDate: 1
-  }
-})
-
-module.exports = mongoose.model('category', model)
+module.exports = mongoose.model('gallery', model)

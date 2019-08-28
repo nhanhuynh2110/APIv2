@@ -31,6 +31,12 @@ const permisions = {
       { key: 'POSTADD', text: 'Add' },
       { key: 'POSTEDIT', text: 'Edit' }
     ]
+  },
+  gallery: {
+    label: 'Gallery',
+    role: [
+      { key: 'GALLERYEDIT', text: 'Edit' }
+    ]
   }
 }
 

@@ -5,7 +5,8 @@ const Models = {
   Category: require('./category'),
   CategoryPost: require('./categoryPost'),
   Post: require('./post'),
-  Role: require('./role')
+  Role: require('./role'),
+  Gallery: require('./gallery')
 }
 
 module.exports = Models
