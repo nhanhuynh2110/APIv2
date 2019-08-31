@@ -1,13 +1,11 @@
 var async = require('async')
 var sha256 = require('sha256')
 var ObjectId = require('mongoose').Types.ObjectId
-
-var authUser = require('../../../controller/authenticate/autuser')
-var utility = require('../../../helper/utility')
-const Models = require('../../../model/mongo')
+var utility = require('../../helper/utility')
+const Models = require('../../model/mongo')
 const {User} = Models
 
-module.exports = function(router) {
+module.exports = (router) => {
   router.get('/user', (req, res) => {
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
