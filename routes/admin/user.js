@@ -36,7 +36,6 @@ module.exports = (router) => {
       let {id} = req.params
       User.findOne({_id: ObjectId(id)}, (error, data) => {
         if (error) return utility.apiResponse(res, 500, error.toString())
-        console.log('data', data)
         return utility.apiResponse(res, 200, 'success', data)
       })
     } catch (error) { return utility.apiResponse(res, 500, error, null) }
@@ -82,7 +81,7 @@ module.exports = (router) => {
         return utility.apiResponse(res, 200, 'success', true)
       })
     } catch (error) {
-      utility.apiResponse(res, 500, 'Server error', null)
+      return utility.apiResponse(res, 500, 'Server error', null)
     }
   })
 }

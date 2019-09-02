@@ -7,6 +7,14 @@ const Models = require('../../model/mongo')
 const {Role} = Models
 
 module.exports = function (router) {
+  router.get('/roles', (req, res) => {
+    try {
+      Role.find({ isActive: true, isDelete: false }, (error, data) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        return utility.apiResponse(res, 200, 'success', data)
+      })
+    } catch (error) { utility.apiResponse(res, 500, error.toString()) }
+  })
   router.get('/role', authUser.checkTokenAdmin, (req, res) => {
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query

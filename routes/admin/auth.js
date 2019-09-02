@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const async = require('async')
+var ObjectId = require('mongoose').Types.ObjectId
 var Models = require('../../model/mongo')
 var sha256 = require('sha256')
 var authUser = require('../../controller/authenticate/autuser')
@@ -70,6 +71,33 @@ module.exports = (router) => {
       })
     } catch (error) {
       return utility.apiResponse(res, 500, error.toString())
+    }
+  })
+
+  router.put('/user/:id/profile', authUser.checkTokenAdmin, (req, res) => {
+    try {
+      const arrKeys = ['avatar', 'firstname', 'lastname', 'gender', 'phone', 'address', 'birthday']
+      const field = req.body
+      const isValid = Object.keys(field).every(el => arrKeys.includes(el))
+
+      if (!isValid) return utility.apiResponse(res, 500, 'Server Update Profile isValid!!!')
+
+      const tokenFn = (cb) => Models.Token.findOne({ token: req.token, userId: req.params.id }, cb)
+
+      const userFn = (tokenData, cb) => {
+        if (!tokenData) return cb(new Error('Token is Valid!!!'))
+        Models.User.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, {new: true}, (err, user) => {
+          if (err) return cb(err.toString())
+          return addRoleUser(user, tokenData.token, cb)
+        })
+      }
+
+      async.waterfall([tokenFn, userFn], (error, user) => {
+        if (error) return utility.apiResponse(res, 500, error.toString())
+        return utility.apiResponse(res, 200, 'success', user)
+      })
+    } catch (error) {
+      return utility.apiResponse(res, 500, 'Server error')
     }
   })
 }
