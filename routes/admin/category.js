@@ -51,6 +51,7 @@ module.exports = function (router) {
   router.post('/category', (req, res) => {
     try {
       let dt = req.body
+      dt['link'] = dt['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       let category = new Category(dt)
       var error = category.validateSync()
 
@@ -71,6 +72,7 @@ module.exports = function (router) {
   router.put('/category/:id', (req, res) => {
     try {
       let field = req.body
+      field['link'] = field['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       delete field.id
       Category.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, {new: true}, (err, data) => {
         if (err) return utility.apiResponse(res, 500, err.toString())
