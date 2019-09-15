@@ -13,5 +13,6 @@ require('./categoryPost')(router)
 require('./post')(router)
 require('./role')(router)
 require('./gallery')(router)
+require('./product')(router)
 
 module.exports = router
