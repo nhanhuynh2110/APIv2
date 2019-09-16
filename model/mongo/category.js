@@ -7,6 +7,8 @@ const model = new Schema({
   img: { type: String, trim: true },
   link: { type: String, trim: true },
   description: { type: String, trim: true },
+  order: { type: Number, trim: true },
+  parentId: { type: Schema.Types.ObjectId, trim: true },
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },
   isHome: { type: Boolean, default: false },
