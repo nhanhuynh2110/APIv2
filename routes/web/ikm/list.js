@@ -4,7 +4,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const utility = require('../../../helper/utility')
 const Models = require('../../../model/mongo')
 
-const { Post, Category } = Models
+const { Product, Category } = Models
 
 module.exports = (router) => {
   router.get('/list', (req, res) => {
@@ -13,14 +13,25 @@ module.exports = (router) => {
       const category = (cb) => {
         Category.findOne({ link: qcat }, cb)
       }
-      let pageSize = 2
-      let skip = pageSize * (parseInt(page) - 1)
-      const posts = (categoryData, cb) => {
-        if (!categoryData) return cb(null, [])
-        Post.find({ isActive: true, isDelete: false, categoryPostId: ObjectId(categoryData._id) }, cb).skip(skip).limit(pageSize)
+
+      const categoryChildren = (categoryData, cb) => {
+        Category.find({ isActive: true, isDelete: false, parentId: categoryData.parentId}, (err, categories) => {
+          if (err) return cb(err)
+          return cb(null, categoryData, categories)
+        })
       }
 
-      async.waterfall([ category, posts ], (error, data) => {
+      let pageSize = 10
+      let skip = pageSize * (parseInt(page) - 1)
+      const productsData = (categoryData, categories, cb) => {
+        if (!categoryData) return cb(null, [])
+        Product.find({ isActive: true, isDelete: false, categoryId: ObjectId(categoryData._id) }, (err, products) => {
+          if (err) return cb(err)
+          return cb(null, { products, categories, category: categoryData})
+        }).skip(skip).limit(pageSize)
+      }
+
+      async.waterfall([ category, categoryChildren, productsData ], (error, data) => {
         if (error) return utility.apiResponse(res, 500, error.toString())
         return utility.apiResponse(res, 200, 'Success', data)
       })
