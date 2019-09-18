@@ -24,6 +24,7 @@ var checkToken = (req, res, next) => {
     Models.Token.findOne({token, ip}, (err, mytoken) => {
       if (err) return res.status(500).json({message: 'server error'})
       if (mytoken) {
+        req['userId'] = mytoken.userId
         req['token'] = token
         next()
       } else return res.status(500).json({message: 'token is not valid'})

@@ -4,7 +4,7 @@ const {Schema} = mongoose
 
 const model = new Schema({
   username: {type: String, require: true, uppercase: false},
-  userId: {type: String, required: true},
+  userId: {type: Schema.Types.ObjectId, required: true},
   userCode: {type: String, default: ''},
   token: {type: String, default: ''},
   ip: {type: String, default: ''}
