@@ -76,14 +76,15 @@ module.exports = (router) => {
 
   router.put('/user/:id/profile', authUser.checkTokenAdmin, (req, res) => {
     try {
-      const arrKeys = ['avatar', 'firstname', 'lastname', 'gender', 'phone', 'address', 'birthday']
+      const arrKeys = ['avatar', 'firstname', 'lastname', 'gender', 'phone', 'address', 'birthdate']
+      
       const field = req.body
       const isValid = Object.keys(field).every(el => arrKeys.includes(el))
-
-      if (req.userId !== req.params.id) return utility.apiResponse(res, 500, 'User isValid!!!')
+      if (req.userId.toString() !== req.params.id.toString()) return utility.apiResponse(res, 500, 'User isValid!!!')
 
       if (!isValid) return utility.apiResponse(res, 500, 'Server Update Profile isValid!!!')
 
+      if (field.birthdate) field.birthdate = new Date(field.birthdate)
       const tokenFn = (cb) => Models.Token.findOne({ token: req.token, userId: req.params.id }, cb)
 
       const userFn = (tokenData, cb) => {
@@ -135,6 +136,7 @@ const addRoleUser = (user, token, callback) => {
     var data = {
       token: token,
       _id: user._id,
+      avatar: user.avatar,
       roleId: user.roleId,
       username: user.username,
       email: user.email,

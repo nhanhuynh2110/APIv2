@@ -24,6 +24,14 @@ const permisions = {
       { key: 'CATEGORYEDIT', text: 'Edit' }
     ]
   },
+  product: {
+    label: 'Product',
+    role: [
+      { key: 'PRODUCTVIEW', text: 'View' },
+      { key: 'PRODUCTADD', text: 'Add' },
+      { key: 'PRODUCTEDIT', text: 'Edit' }
+    ]
+  },
   post: {
     label: 'Post',
     role: [

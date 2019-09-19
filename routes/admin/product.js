@@ -73,17 +73,13 @@ module.exports = function (router) {
   router.put('/product/:id', (req, res) => {
     try {
       let field = req.body
-      console.log('field', field)
       if (field['title']) field['link'] = field['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       delete field.id
       Product.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, {new: true}, (err, data) => {
-        console.log(err)
-        console.log('data', data)
         if (err) return utility.apiResponse(res, 500, err.toString())
         return utility.apiResponse(res, 200, 'success', data)
       })
     } catch (err) {
-      console.log('catch', err)
       return utility.apiResponse(res, 500, err, null)
     }
   })
