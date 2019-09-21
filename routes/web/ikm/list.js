@@ -9,7 +9,7 @@ const { Product, Category } = Models
 module.exports = (router) => {
   router.get('/list', (req, res) => {
     try {
-      const { page, qcat } = req.query
+      const { page, qcat, pageSize = 10 } = req.query
       const category = (cb) => {
         Category.findOne({ link: qcat }, cb)
       }
@@ -20,15 +20,18 @@ module.exports = (router) => {
           return cb(null, categoryData, categories)
         })
       }
-
-      let pageSize = 10
-      let skip = pageSize * (parseInt(page) - 1)
+      let skip = parseInt(pageSize) * (parseInt(page) - 1)
       const productsData = (categoryData, categories, cb) => {
         if (!categoryData) return cb(null, [])
-        Product.find({ isActive: true, isDelete: false, categoryId: ObjectId(categoryData._id) }, (err, products) => {
+        const query = { isActive: true, isDelete: false, categoryId: ObjectId(categoryData._id) }
+        const products = (callback) => Product.find(query, callback).skip(skip).limit(parseInt(pageSize))
+        const total = (callback) => Product.count(query).then(count => callback(null, count)).catch(err => callback(err))
+
+        async.parallel({products, total}, (err, data) => {
           if (err) return cb(err)
-          return cb(null, { products, categories, category: categoryData})
-        }).skip(skip).limit(pageSize)
+          const {products, total} = data
+          return cb(null, { products, total, categories, category: categoryData})
+        })
       }
 
       async.waterfall([ category, categoryChildren, productsData ], (error, data) => {
