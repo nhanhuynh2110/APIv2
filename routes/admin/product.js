@@ -3,7 +3,7 @@ var ObjectId = require('mongoose').Types.ObjectId
 
 var utility = require('../../helper/utility')
 const Models = require('../../model/mongo')
-const {Product} = Models
+const {Product, Category} = Models
 
 module.exports = function (router) {
   router.get('/products', (req, res) => {
@@ -52,17 +52,34 @@ module.exports = function (router) {
     try {
       let dt = req.body
       dt['link'] = dt['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
-      
-      let product = new Product(dt)
-      var error = product.validateSync()
-
-      if (error) {
-        var errorKeys = Object.keys(error.errors)
-        return utility.apiResponse(res, 500, error.errors[errorKeys[0].message].toString())
+      let categoryId = dt['categoryId']
+      const getParentId = (cb) => {
+        Category.findOne({ _id: ObjectId(categoryId)}, (err, cat) => {
+          if (err) return cb(err)
+          if (!cat) return cb(new Error('category invalid'))
+          if (cat.parentId) return cb(null, cat.parentId)
+          else return cb(null, categoryId)
+        })
       }
 
-      product.save((err, data) => {
-        if (err) return utility.apiResponse(res, 500, err.toString())
+      const createProduct = (parentId, cb) => {
+        dt['categoryParentId'] = parentId
+        let product = new Product(dt)
+        var error = product.validateSync()
+
+        if (error) {
+          var errorKeys = Object.keys(error.errors)
+          return cb(error.errors[errorKeys[0].message].toString())
+        }
+
+        product.save((err, data) => {
+          if (err) cb(err.toString())
+          return cb(null, data)
+        })
+      }
+
+      async.waterfall([getParentId, createProduct], (error, data) => {
+        if (error) return utility.apiResponse(res, 500, err.toString())
         return utility.apiResponse(res, 200, 'success', data)
       })
     } catch (e) {
@@ -75,8 +92,32 @@ module.exports = function (router) {
       let field = req.body
       if (field['title']) field['link'] = field['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       delete field.id
-      Product.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, {new: true}, (err, data) => {
-        if (err) return utility.apiResponse(res, 500, err.toString())
+
+      
+      const getParentId = (cb) => {
+        if (field['categoryId']) {
+          Category.findOne({ _id: ObjectId(field['categoryId'])}, (err, cat) => {
+            if (err) return cb(err)
+            if (!cat) return cb(new Error('category invalid'))
+            let parentId = cat.parentId ? cat.parentId : field['categoryId']
+            field['categoryParentId'] = parentId
+            return cb(null, field)
+          })
+        } else {
+          return cb(null, field)
+        }
+        
+      }
+
+      const updateProduct = (dataUpdate, cb) => {
+        Product.findOneAndUpdate({ _id: ObjectId(req.params.id) }, dataUpdate, {new: true}, (err, data) => {
+          if (err) return cb(err.toString())
+          return cb(null, data)
+        })
+      }
+
+      async.waterfall([getParentId, updateProduct], (error, data) => {
+        if (error) return utility.apiResponse(res, 500, err.toString())
         return utility.apiResponse(res, 200, 'success', data)
       })
     } catch (err) {

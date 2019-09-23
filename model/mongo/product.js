@@ -9,9 +9,11 @@ const model = new Schema({
   gallery: { type: Array, trim: true },
   link: { type: String, trim: true },
   categoryId: { type: Schema.Types.ObjectId, required: true },
+  categoryParentId: { type: Schema.Types.ObjectId },
   price: {type: String, trim: true, required: true},
   priceSale: {type: String, trim: true},
   description: { type: String, trim: true },
+  content: { type: String, trim: true },
   isNewProduct: { type: Boolean, default: false },
   isHot: {type: Boolean, default: false },
 

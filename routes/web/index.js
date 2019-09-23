@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
 
-require('./ikm')(router)
+require('./odu')(router)
 
 module.exports = router
