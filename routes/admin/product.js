@@ -3,7 +3,7 @@ var ObjectId = require('mongoose').Types.ObjectId
 
 var utility = require('../../helper/utility')
 const Models = require('../../model/mongo')
-const {Product, Category} = Models
+const {Product, Category, ProductSize} = Models
 
 module.exports = function (router) {
   router.get('/products', (req, res) => {
@@ -54,13 +54,42 @@ module.exports = function (router) {
       dt['link'] = dt['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       let categoryId = dt['categoryId']
       const getParentId = (cb) => {
-        Category.findOne({ _id: ObjectId(categoryId)}, (err, cat) => {
+        Category.findOne({ _id: ObjectId(categoryId) }, (err, cat) => {
           if (err) return cb(err)
           if (!cat) return cb(new Error('category invalid'))
           if (cat.parentId) return cb(null, cat.parentId)
           else return cb(null, categoryId)
         })
       }
+
+      // let productSize = [
+      //   {
+      //     size: 'XL',
+      //     color: ['red', 'black'],
+      //     image: {
+      //       'xl-red': {
+      //         main: {
+      //           large: '',
+      //           mediumn: '',
+      //           small: ''
+      //         }
+      //       }
+      //     }
+      //   },
+      //   {
+      //     size: 'L',
+      //     color: ['red', 'black'],
+      //     image: {
+      //       'l-red': {
+      //         main: {
+      //           large: '',
+      //           mediumn: '',
+      //           small: ''
+      //         }
+      //       }
+      //     }
+      //   }
+      // ]
 
       const createProduct = (parentId, cb) => {
         dt['categoryParentId'] = parentId
@@ -93,7 +122,7 @@ module.exports = function (router) {
       if (field['title']) field['link'] = field['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       delete field.id
 
-      
+
       const getParentId = (cb) => {
         if (field['categoryId']) {
           Category.findOne({ _id: ObjectId(field['categoryId'])}, (err, cat) => {
@@ -106,7 +135,7 @@ module.exports = function (router) {
         } else {
           return cb(null, field)
         }
-        
+
       }
 
       const updateProduct = (dataUpdate, cb) => {

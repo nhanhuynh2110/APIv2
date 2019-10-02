@@ -8,6 +8,7 @@ const Models = {
   Role: require('./role'),
   Gallery: require('./gallery'),
   Product: require('./product'),
+  ProductSize: require('./productSize'),
   Permission: require('./permission'),
   PermissionDefine: require('./permissionDefine')
 }
