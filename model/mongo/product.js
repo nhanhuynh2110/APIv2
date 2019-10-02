@@ -17,6 +17,10 @@ const model = new Schema({
   isNewProduct: { type: Boolean, default: false },
   isHot: {type: Boolean, default: false },
 
+  metaTitle: { type: String, trim: true },
+  metaDescription: { type: String, trim: true },
+  altImage: { type: String, trim: true },
+
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },
   activeDate: { type: Date, default: Date.now() },
