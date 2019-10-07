@@ -15,8 +15,9 @@ const model = new Schema({
   description: { type: String, trim: true },
   content: { type: String, trim: true },
   isNewProduct: { type: Boolean, default: false },
-  isHot: {type: Boolean, default: false },
-
+  isHot: { type: Boolean, default: false },
+  size: { type: Array },
+  color: { type: Array },
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },
   activeDate: { type: Date, default: Date.now() },

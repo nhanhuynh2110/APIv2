@@ -106,22 +106,22 @@ module.exports = (router) => {
 
   router.put('/change-password', authUser.checkTokenAdmin, (req, res) => {
     try {
-      const arrKeys = ['password', 'confirmPassword']
+      const arrKeys = ['password', 'newPassword', 'confirmPassword']
       const field = req.body
       const isValid = Object.keys(field).every(el => arrKeys.includes(el))
 
-      // if (req.userId !== req.params.id) return utility.apiResponse(res, 500, 'User isValid!!!')
-
       if (!isValid) return utility.apiResponse(res, 500, 'info invalid isValid!!!')
 
-      const {password, confirmPassword} = field
+      const {password, newPassword, confirmPassword} = field
 
       if (!password) return utility.apiResponse(res, 500, 'password is not empty !!!')
+      if (!newPassword) return utility.apiResponse(res, 500, 'new password is not empty !!!')
+      if (!confirmPassword) return utility.apiResponse(res, 500, 'confirm password is not empty !!!')
+      if (newPassword !== confirmPassword) return utility.apiResponse(res, 500, 'confirm password is not match !!!')
 
-      if (password !== confirmPassword) return utility.apiResponse(res, 500, 'confirm password is not match !!!')
-
-      Models.User.findOneAndUpdate({ _id: ObjectId(req.userId) }, field, {new: true}, (err, user) => {
+      Models.User.findOneAndUpdate({ _id: ObjectId(req.userId), password: sha256(password)}, { password: sha256(newPassword) }, {new: true}, (err, user) => {
         if (err) return utility.apiResponse(res, 500, err.toString())
+        if (!user) return utility.apiResponse(res, 500, 'password is not valid')
         return utility.apiResponse(res, 200, 'success', true)
       })
 
