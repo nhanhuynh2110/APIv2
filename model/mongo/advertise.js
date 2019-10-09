@@ -6,12 +6,8 @@ const model = new Schema({
   title: { type: String, trim: true, required: true },
   img: { type: String, trim: true },
   link: { type: String, trim: true },
-  description: { type: String, trim: true },
-  order: { type: Number, trim: true },
-  parentId: { type: Schema.Types.ObjectId, trim: true },
 
   metaTitle: { type: String, trim: true },
-  metaDescription: { type: String, trim: true },
   altImage: { type: String, trim: true },
   
   isActive: { type: Boolean, default: false },
@@ -32,4 +28,4 @@ model.index({
   }
 })
 
-module.exports = mongoose.model('category', model)
+module.exports = mongoose.model('advertise', model)

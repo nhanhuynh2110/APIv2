@@ -32,6 +32,14 @@ const permisions = {
       { key: 'PRODUCTEDIT', text: 'Edit' }
     ]
   },
+  advertise: {
+    label: 'Advertise',
+    role: [
+      { key: 'ADVERTISEVIEW', text: 'View' },
+      { key: 'ADVERTISEADD', text: 'Add' },
+      { key: 'ADVERTISEEDIT', text: 'Edit' }
+    ]
+  },
   post: {
     label: 'Post',
     role: [
