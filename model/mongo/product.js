@@ -21,6 +21,9 @@ const model = new Schema({
   metaDescription: { type: String, trim: true },
   altImage: { type: String, trim: true },
 
+  isHot: { type: Boolean, default: false },
+  size: { type: Array },
+  color: { type: Array },
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },
   activeDate: { type: Date, default: Date.now() },

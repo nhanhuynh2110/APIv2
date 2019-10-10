@@ -166,38 +166,14 @@ info [Tue Sep 17 2019 17:59:02 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d42
 info [Tue Sep 17 2019 17:59:46 GMT+0700 (GMT+07:00)]  start server 3100 success
 info [Tue Sep 17 2019 17:59:46 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
 
-info [Mon Sep 30 2019 23:35:28 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Mon Sep 30 2019 23:35:28 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
+info [Mon Sep 23 2019 08:59:25 GMT+0700 (Indochina Time)]  start server 3100 success
+info [Mon Sep 23 2019 08:59:25 GMT+0700 (Indochina Time)]  userdata: 5d67362516267267ac8fc0f6
 
-info [Tue Oct 01 2019 00:03:38 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Tue Oct 01 2019 00:03:38 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
+info [Mon Sep 23 2019 14:11:08 GMT+0700 (Indochina Time)]  start server 3100 success
+info [Mon Sep 23 2019 14:11:08 GMT+0700 (Indochina Time)]  userdata: 5d67362516267267ac8fc0f6
 
-info [Tue Oct 01 2019 14:02:02 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Tue Oct 01 2019 14:02:02 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
+info [Tue Sep 24 2019 08:36:46 GMT+0700 (Indochina Time)]  start server 3100 success
+info [Tue Sep 24 2019 08:36:46 GMT+0700 (Indochina Time)]  userdata: 5d67362516267267ac8fc0f6
 
-info [Tue Oct 01 2019 14:41:20 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Tue Oct 01 2019 14:41:20 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Tue Oct 01 2019 16:07:12 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Tue Oct 01 2019 16:07:12 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Tue Oct 01 2019 16:08:05 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Tue Oct 01 2019 16:08:05 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Tue Oct 01 2019 16:09:10 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Tue Oct 01 2019 16:09:11 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Wed Oct 02 2019 17:38:17 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Wed Oct 02 2019 17:38:17 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Wed Oct 02 2019 17:38:53 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Wed Oct 02 2019 17:38:53 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Wed Oct 02 2019 19:00:55 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Wed Oct 02 2019 19:00:55 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Wed Oct 02 2019 20:45:39 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Wed Oct 02 2019 20:45:39 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
-
-info [Wed Oct 02 2019 20:48:42 GMT+0700 (GMT+07:00)]  start server 3100 success
-info [Wed Oct 02 2019 20:48:42 GMT+0700 (GMT+07:00)]  userdata: 5d64eb245ed41d4254e8fc43
+info [Wed Oct 02 2019 08:55:11 GMT+0700 (Indochina Time)]  start server 3100 success
+info [Wed Oct 02 2019 08:55:11 GMT+0700 (Indochina Time)]  userdata: 5d67362516267267ac8fc0f6
