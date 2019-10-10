@@ -95,6 +95,6 @@ app.post('/upload', function (req, res) {
 // })
 
 require('./socket/connection')(io)
-server.listen(3100, () => {
-  global.logger.info('start server 3100 success')
+server.listen(3102, () => {
+  global.logger.info('start server 3102 success')
 })
