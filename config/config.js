@@ -1,4 +1,6 @@
 var config = {
+  PORT: 3100,
+  createUser: true,
   mongoDB: {
     connect: 'mongodb://localhost:27017/TA'
   },

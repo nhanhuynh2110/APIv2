@@ -89,7 +89,7 @@ Logger.prototype.log = function() {
         message += ' ' + sys.inspect(arg, false, null);
       }
     });
-    message = this.format(Logger.levels[log_index], new Date(), message);
+    message = this.format(new Date(), Logger.levels[log_index].toUpperCase(), message);
     this.write(message + "\n");
     return message;
   }
