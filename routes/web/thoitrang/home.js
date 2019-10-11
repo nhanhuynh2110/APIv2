@@ -4,7 +4,7 @@ const _ = require('lodash')
 const utility = require('../../../helper/utility')
 const Models = require('../../../model/mongo')
 
-const { Category, Product, Gallery } = Models
+const { Category, Product, Gallery, Slide } = Models
 
 module.exports = (router) => {
   router.get('/menu', (req, res) => {
@@ -29,7 +29,6 @@ module.exports = (router) => {
         })
       }
 
-
       const productsNew = (cb) => {
         Product.find({ isActive: true, isDelete: false, isNewProduct: true }, (err, posts) => {
           return cb(err, posts)
@@ -42,13 +41,17 @@ module.exports = (router) => {
         }).limit(12)
       }
 
+      const slides = (cb) => {
+        Slide.find({ isActive: true, isDelete: false }, cb)
+      }
+
       const galleries = (cb) => {
         Gallery.find({ isActive: true, isDelete: false }, (err, galleries) => {
           return cb(err, galleries)
         }).sort({createDate: -1}).limit(21)
       }
 
-      async.parallel({ categories, productsNew, productsHot, galleries }, (error, data) => {
+      async.parallel({ categories, productsNew, productsHot, slides, galleries }, (error, data) => {
         if (error) return utility.apiResponse(res, 500, error.toString())
         const categories = data.categories
         const categoriesHome = categories.filter(el => el.isHome)

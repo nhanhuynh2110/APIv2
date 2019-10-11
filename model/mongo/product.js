@@ -16,6 +16,7 @@ const model = new Schema({
   content: { type: String, trim: true },
   isNewProduct: { type: Boolean, default: false },
   isHot: {type: Boolean, default: false },
+  inStock: {type: Boolean, default: true },
 
   metaTitle: { type: String, trim: true },
   metaDescription: { type: String, trim: true },

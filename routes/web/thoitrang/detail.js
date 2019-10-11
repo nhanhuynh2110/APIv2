@@ -29,7 +29,19 @@ module.exports = (router) => {
         })
       }
 
-      async.waterfall([ product, category, catChildren ], (error, data) => {
+      const productsHot = (data, cb) => {
+        Product.find({ isActive: true, isDelete: false, isHot: true }, (err, products) => {
+          return cb(err, {...data, productsHot: products})
+        }).limit(12)
+      }
+
+      const productsNew = (data, cb) => {
+        Product.find({ isActive: true, isDelete: false, isNewProduct: true }, (err, products) => {
+          return cb(err, {...data, productsNew: products})
+        }).limit(12)
+      }
+
+      async.waterfall([ product, category, catChildren, productsHot, productsNew ], (error, data) => {
         if (error) return utility.apiResponse(res, 500, error.toString())
         return utility.apiResponse(res, 200, 'Success', data)
       })

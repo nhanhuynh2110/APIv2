@@ -15,6 +15,7 @@ module.exports = (router) => {
       }
 
       const categoryChildren = (categoryData, cb) => {
+        if (!categoryData) return cb(new Error('category is invalid'))
         Category.find({ isActive: true, isDelete: false, parentId: categoryData.parentId}, (err, categories) => {
           if (err) return cb(err)
           return cb(null, categoryData, categories)
