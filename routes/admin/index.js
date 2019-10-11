@@ -16,5 +16,6 @@ require('./gallery')(router)
 require('./product')(router)
 require('./permission')(router)
 require('./permissionDefine')(router)
+require('./fileManager')(router)
 
 module.exports = router
