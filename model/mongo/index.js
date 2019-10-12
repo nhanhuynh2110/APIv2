@@ -9,6 +9,7 @@ const Models = {
   Gallery: require('./gallery'),
   Product: require('./product'),
   Advertise: require('./advertise'),
+  Slide: require('./slide'),
   ProductSize: require('./productSize'),
   Permission: require('./permission'),
   PermissionDefine: require('./permissionDefine')
