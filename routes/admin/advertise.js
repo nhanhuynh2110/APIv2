@@ -46,7 +46,6 @@ module.exports = (router) => {
     try {
       let data = req.body
       data['isDelete'] = false
-      console.log('data', data)
       let advertise = new Advertise(data)
       var error = advertise.validateSync()
 
