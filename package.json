@@ -24,6 +24,7 @@
     "mysql": "^2.15.0",
     "path": "^0.12.7",
     "request": "^2.83.0",
+    "rimraf": "^3.0.0",
     "sha256": "^0.2.0",
     "smartcrop": "^2.0.3",
     "stringbuilder": "0.0.11"
