@@ -15,6 +15,12 @@ const model = new Schema({
   description: { type: String, trim: true },
   content: { type: String, trim: true },
   isNewProduct: { type: Boolean, default: false },
+  isHot: {type: Boolean, default: false },
+
+  metaTitle: { type: String, trim: true },
+  metaDescription: { type: String, trim: true },
+  altImage: { type: String, trim: true },
+
   isHot: { type: Boolean, default: false },
   size: { type: Array },
   color: { type: Array },
