@@ -21,6 +21,17 @@ const isImageValid = (filename, mimetype) => {
   return allowedExts.indexOf(extension.toLowerCase()) != -1 && allowedMimeTypes.indexOf(mimetype) != -1
 }
 
+app.get('/download', (req, res) => {
+  console.log('__dirname + `/uploads/file-manager/${req.query.path}`', __dirname + `/uploads/file-manager/${req.query.path}`)
+  // res.sendFile(__dirname + `/uploads/file-manager/${req.query.path}`)
+
+  fs.readFile(__dirname + `/uploads/file-manager/${req.query.path}`, (err, data) => {
+    res.end(data)
+  })
+  // res.status(200).json({ status: 200, message: 'success' })
+  // res.send(file)
+})
+
 app.post('/upload', (req, res) => {
   const { folder } = req.query
 

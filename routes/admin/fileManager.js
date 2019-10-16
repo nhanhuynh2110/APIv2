@@ -11,6 +11,14 @@ const rootPath = './uploads/file-manager'
 const routePrefix = '/file-manager'
 
 module.exports = function (router) {
+  router.get(routePrefix + '/file', (req, res) => {
+    // console.log('req.query', req.query)
+    // const file = `${rootPath}/${req.query.path}`
+    // console.log('file', file)
+    utility.apiResponse(res, 200, 'success', true)
+    // res.send(file)
+  })
+
   router.put(routePrefix + '/:name', authUser.checkTokenAdmin, (req, res) => {
     try {
       const {name} = req.params
