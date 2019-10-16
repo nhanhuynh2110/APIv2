@@ -62,35 +62,6 @@ module.exports = function (router) {
         })
       }
 
-      // let productSize = [
-      //   {
-      //     size: 'XL',
-      //     color: ['red', 'black'],
-      //     image: {
-      //       'xl-red': {
-      //         main: {
-      //           large: '',
-      //           mediumn: '',
-      //           small: ''
-      //         }
-      //       }
-      //     }
-      //   },
-      //   {
-      //     size: 'L',
-      //     color: ['red', 'black'],
-      //     image: {
-      //       'l-red': {
-      //         main: {
-      //           large: '',
-      //           mediumn: '',
-      //           small: ''
-      //         }
-      //       }
-      //     }
-      //   }
-      // ]
-
       const createProduct = (parentId, cb) => {
         dt['categoryParentId'] = parentId
         let product = new Product(dt)
@@ -108,7 +79,7 @@ module.exports = function (router) {
       }
 
       async.waterfall([getParentId, createProduct], (error, data) => {
-        if (error) return utility.apiResponse(res, 500, err.toString())
+        if (error) return utility.apiResponse(res, 500, error.toString())
         return utility.apiResponse(res, 200, 'success', data)
       })
     } catch (e) {
@@ -122,10 +93,9 @@ module.exports = function (router) {
       if (field['title']) field['link'] = field['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       delete field.id
 
-
       const getParentId = (cb) => {
         if (field['categoryId']) {
-          Category.findOne({ _id: ObjectId(field['categoryId'])}, (err, cat) => {
+          Category.findOne({ _id: ObjectId(field['categoryId']) }, (err, cat) => {
             if (err) return cb(err)
             if (!cat) return cb(new Error('category invalid'))
             let parentId = cat.parentId ? cat.parentId : field['categoryId']
