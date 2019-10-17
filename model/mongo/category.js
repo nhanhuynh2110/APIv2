@@ -9,11 +9,9 @@ const model = new Schema({
   description: { type: String, trim: true },
   order: { type: Number, trim: true },
   parentId: { type: Schema.Types.ObjectId, trim: true },
-
   metaTitle: { type: String, trim: true },
   metaDescription: { type: String, trim: true },
   altImage: { type: String, trim: true },
-  
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },
   isHome: { type: Boolean, default: false },
