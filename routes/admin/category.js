@@ -61,6 +61,7 @@ module.exports = function (router) {
     try {
       let dt = req.body
       dt['link'] = dt['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
+      dt['parentId'] = dt['parentId'] ? dt['parentId'] : null
       let category = new Category(dt)
       var error = category.validateSync()
 
@@ -74,6 +75,7 @@ module.exports = function (router) {
         return utility.apiResponse(res, 200, 'success', data)
       })
     } catch (e) {
+      console.log('e', e)
       return utility.apiResponse(res, 500, 'server error')
     }
   })
@@ -83,8 +85,6 @@ module.exports = function (router) {
       let field = req.body
       if (field['title']) field['link'] = field['title'].normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-').toLowerCase()
       delete field.id
-
-      console.log('field', field)
       Category.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, {new: true}, (err, data) => {
         if (err) return utility.apiResponse(res, 500, err.toString())
         return utility.apiResponse(res, 200, 'success', data)
