@@ -105,7 +105,6 @@ module.exports = function (router) {
         } else {
           return cb(null, field)
         }
-
       }
 
       const updateProduct = (dataUpdate, cb) => {
