@@ -1,10 +1,10 @@
-var express = require('express')
-var router = express.Router()
+const router = require('express').Router()
+
+const { withAPI } = require('../middlewares')
 
 const authUser = require('../../controller/authenticate/autuser')
-
+router.use(withAPI())
 require('./auth')(router)
-
 router.use('/*', authUser.checkTokenAdmin)
 
 require('./user')(router)

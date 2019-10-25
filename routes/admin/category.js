@@ -1,3 +1,4 @@
+// const router = require('express').Router()
 var async = require('async')
 var ObjectId = require('mongoose').Types.ObjectId
 
@@ -24,6 +25,7 @@ module.exports = function (router) {
     } catch (error) { utility.apiResponse(res, 500, error.toString()) }
   })
   router.get('/category', (req, res) => {
+    console.log('data >>>>>>>>>>>>>>>>>>')
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
       const query = {}
@@ -41,10 +43,10 @@ module.exports = function (router) {
       }
 
       async.parallel({ total, list }, (error, data) => {
-        if (error) return utility.apiResponse(res, 500, error.toString())
-        return utility.apiResponse(res, 200, 'success', data)
+        if (error) return res.serverError(error)
+        return res.OK(data)
       })
-    } catch (error) { utility.apiResponse(res, 500, error.toString(), null) }
+    } catch (error) { return res.serverError(error) }
   })
 
   router.get('/category/:id', (req, res) => {

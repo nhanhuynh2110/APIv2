@@ -51,4 +51,4 @@ model.index({
   }
 })
 
-module.exports = mongoose.model('product', model)
+module.exports = mongoose.model('productMaster', model)
