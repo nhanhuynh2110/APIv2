@@ -1,4 +1,4 @@
-const error = require('./error')
+// const error = require('./error')
 const status = {
   OK: 200,
   CREATED: 201,
@@ -15,22 +15,24 @@ module.exports = {
   status,
   methods: res => {
     return {
-      OK (data) { return res.status(status.OK).json(data) },
-      created (data) { return res.status(status.CREATED).json(data) },
+      OK (data) { return res.status(status.OK).json({status: status.OK, message: 'success', data}) },
+      created (data) { return res.status(status.CREATED).json({status: status.CREATED, message: '', data}) },
       badRequest (message) {
-        return res.status(status.BAD_REQUEST).json(error({ message: message || 'Bad Request' }, status.BAD_REQUEST))
+        return res.status(status.BAD_REQUEST).json({status: status.BAD_REQUEST, message: message || 'Bad Request'})
       },
       conflict () {
-        return res.status(status.CONFLICT).json(error({ message: 'Type of request data is different to type of resource' }, status.CONFLICT))
+        return res.status(status.CONFLICT).json({status: status.CONFLICT, message: 'Type of request data is different to type of resource'})
       },
-      serverError (err) { return res.status(status.SERVER_ERROR).json(error(err)) },
+      serverError (err) { return res.status(status.SERVER_ERROR).json({status: status.SERVER_ERROR, message: err.toString()}) },
       forbidden () {
-        return res.status(status.FORBIDDEN).json(error({ message: 'You don\'t have permission to access this resource' }, status.FORBIDDEN))
+        return res.status(status.FORBIDDEN).json({ status: status.FORBIDDEN, message: 'You don\'t have permission to access this resource' })
       },
-      notFound () { return res.status(status.NOT_FOUND).json(error({ message: 'The resource is not existed or be deleted' }, status.NOT_FOUND)) },
+      notFound () {
+        return res.status(status.NOT_FOUND).json({ status: status.NOT_FOUND, message: 'The resource is not existed or be deleted' })
+      },
       methodNotAllowed (method, allowed) {
         if (allowed) res.setHeader('Allow', allowed)
-        return res.status(status.METHOD_NOT_ALLOWED).json(error({ message: `Method ${method} Not Allowed` }))
+        return res.status(status.METHOD_NOT_ALLOWED).json({ status: status.METHOD_NOT_ALLOWED, message: `Method ${method} Not Allowed` })
       },
       noContent () { return res.status(status.NO_CONTENT).end() }
     }

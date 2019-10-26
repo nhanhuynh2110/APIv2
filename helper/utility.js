@@ -25,6 +25,7 @@ var utility = {
       .replace(/[^a-zA-Z0-9 ]/g, '')
       .replace(/[ ]/g, '-')
       .toLowerCase()
-  }
+  },
+  runParrallel: (tasks, ...args) => Promise.all(tasks.map(task => task(...args)))
 }
 module.exports = utility

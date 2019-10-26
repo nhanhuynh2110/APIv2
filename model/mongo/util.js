@@ -1,59 +1,52 @@
-var ObjectId = require('mongoose').Types.ObjectId
+const ObjectId = require('mongoose').Types.ObjectId
+const _ = require('lodash')
 
 module.exports = {
   countDocument: (Model, query) => {
     try {
-      Model.count(query, (error, count) => {
-        if (error) return Promise.reject(error)
-        return Promise.resolve(count)
-      })
-    } catch (error) {
-      return Promise.error(error)
-    }
+      return Model.count(query)
+    } catch (error) { return Promise.reject(error) }
   },
 
   excuteQuery: (Model, query) => {
     try {
-      return Model.find(query, (error, data) => {
-        if (error) return Promise.reject(error)
-        return Promise.resolve(data)
-      })
-    } catch (error) {
-      return Promise.error(error)
-    }
+      return Model.find(query)
+    } catch (error) { return Promise.reject(error) }
   },
 
   findOneId: (Model, id) => {
     try {
-      Model.findOne({_id: ObjectId(id)}, (error, data) => {
-        if (error) return Promise.reject(error)
-        return Promise.resolve(data)
-      })
-    } catch (error) {
-      return Promise.error(error)
-    }
+      return Model.findOne({_id: ObjectId(id)})
+    } catch (error) { return Promise.reject(error) }
   },
 
-  save: (Model, data) => {
+  create: (Model, data) => {
     try {
       const modelSchema = new Model(data)
-      modelSchema.save((error, resp) => {
-        if (error) return Promise.reject(error)
-        return Promise.resolve(resp)
-      })
-    } catch (error) {
-      return Promise.error(error)
-    }
+      return modelSchema.save()
+    } catch (error) { return Promise.reject(error) }
   },
 
   update: (Model, conditions, data) => {
     try {
-      Model.findOneAndUpdate(conditions, data, {new: true}, (error, resp) => {
-        if (error) return Promise.reject(error)
-        return Promise.resolve(resp)
-      })
-    } catch (error) {
-      return Promise.error(error)
-    }
+      return Model.findOneAndUpdate(conditions, data, {new: true})
+    } catch (error) { return Promise.reject(error) }
+  },
+
+  deleteById: (Model, id) => {
+    try {
+      return Model.deleteOne({_id: ObjectId(id)})
+    } catch (error) { return Promise.reject(error) }
+  },
+
+  calSkip: (pageSize, pageNumber) => {
+    try {
+      return parseInt(pageSize) * (parseInt(pageNumber) - 1)
+    } catch (error) { return null }
+  },
+
+  formatSort: (column, sortType = 'asc') => {
+    if (!column) return null
+    return { [column]: sortType === 'asc' ? 1 : -1 }
   }
 }
