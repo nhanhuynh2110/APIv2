@@ -19,7 +19,9 @@ module.exports = {
   },
   filter: ({$searchKey, isDelete, pageSize, pageNumber, colSort, typeSort}) => {
     const query = {}
-    if ($searchKey) { query['$text'] = { $search: $searchKey } }
+    if ($searchKey) {
+      query['$text'] = { $search: $searchKey, $caseSensitive: true, $diacriticSensitive: true }
+    }
     query.isDelete = isDelete === 'true'
     const tasks = []
     tasks.push(() => countDocument(Product, query).then(count => count))
@@ -32,7 +34,8 @@ module.exports = {
       total: data[0],
       list: data[1]
     }))
-  }
+  },
+  getProductActive: () => excuteQuery(Product, {isActive: true, isDelete: false})
 }
 
 const hadlePayloadForm = async (payload) => {
