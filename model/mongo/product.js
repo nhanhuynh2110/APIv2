@@ -18,6 +18,10 @@ const model = new Schema({
   isHot: { type: Boolean, default: false },
   inStock: { type: Boolean, default: true },
 
+  info: {type: String, trim: true},
+  info1: {type: String, trim: true},
+  info2: {type: String, trim: true},
+
   metaTitle: { type: String, trim: true },
   metaDescription: { type: String, trim: true },
   altImage: { type: String, trim: true },

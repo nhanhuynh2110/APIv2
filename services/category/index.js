@@ -6,7 +6,10 @@ const {Category} = require('../../model/mongo')
 
 module.exports = {
   detail: async (id) => findOneId(Category, id),
-  create: (payload) => hadlePayloadForm(payload).then(resp => create(Category, resp)),
+  create: (payload) => {
+    if (!payload.parentId) payload.parentId = null
+    return hadlePayloadForm(payload).then(resp => create(Category, resp))
+  },
   updateById: async (id, payload) => {
     const cat = await findOneId(Category, id)
     if (!cat) return Promise.resolve(null)
@@ -25,8 +28,6 @@ module.exports = {
     query.isDelete = isDelete === 'true'
     if (level === 'parent') query.parentId = null
     if (level === 'children') query.parentId = { $ne: null }
-
-    console.log(query)
     const tasks = []
     tasks.push(() => countDocument(Category, query).then(count => count))
     tasks.push(() => {
@@ -55,9 +56,6 @@ module.exports = {
 
     const categories = await Category.find(criteria)
     let tasks = []
-    console.log('catExistNum', catExistNum)
-
-    console.log('categories', categories)
     if (categories && catExistNum) {
       tasks = categories.map((item) => {
         const order = item.order + 1
