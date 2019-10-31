@@ -1,17 +1,17 @@
 var utility = require('../../helper/utility')
-const {ProductService} = require('../../services')
+const {ProductMasterService} = require('../../services')
 
 module.exports = function (router) {
-  router.get('/products', (req, res) => {
+  router.get('/products-master', (req, res) => {
     try {
-      return ProductService.getProductActive().then(res.OK).catch(res.serverError)
+      return ProductMasterService.getProductActive().then(res.OK).catch(res.serverError)
     } catch (error) { utility.apiResponse(res, 500, error.toString()) }
   })
 
-  router.get('/product', (req, res) => {
+  router.get('/product-master', (req, res) => {
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
-      ProductService.filter({
+      ProductMasterService.filter({
         $searchKey: strKey,
         isDelete: isDelete,
         pageSize: pageSize,
@@ -24,42 +24,42 @@ module.exports = function (router) {
     } catch (error) { return res.serverError(error) }
   })
 
-  router.get('/product/:id', async (req, res) => {
+  router.get('/product-master/:id', async (req, res) => {
     try {
       let {id} = req.params
       if (!id) return res.badRequest('request invalid')
-      const data = await ProductService.productDetail(id)
+      const data = await ProductMasterService.detail(id)
       if (!data) return res.notFound()
       return res.OK(data)
     } catch (error) { return res.serverError(error) }
   })
 
-  router.post('/product', async (req, res) => {
+  router.post('/product-master', async (req, res) => {
     try {
       const payload = req.body
       if (!payload) return res.badRequest()
-      const product = await ProductService.create(payload)
+      const product = await ProductMasterService.create(payload)
       if (!product) return res.serverError(new Error('Create product Unsuccessful !!!'))
       return res.OK(product)
     } catch (e) { return res.serverError(e) }
   })
 
-  router.put('/product/:id', async (req, res) => {
+  router.put('/product-master/:id', async (req, res) => {
     try {
       const payload = req.body
       const {id} = req.params
       if (!payload || !id) return res.badRequest()
-      const product = await ProductService.updateById(id, payload)
+      const product = await ProductMasterService.updateById(id, payload)
       if (!product) return res.notFound()
       return res.OK(product)
     } catch (err) { return res.serverError(err) }
   })
 
-  router.delete('/product/:id', async (req, res) => {
+  router.delete('/product-master/:id', async (req, res) => {
     try {
       var { id } = req.params
       if (!id) return res.badRequest()
-      const product = await ProductService.deleteById(id)
+      const product = await ProductMasterService.deleteById(id)
       if (!product) return res.notFound()
       else res.OK(true)
     } catch (error) { return res.serverError(error) }
