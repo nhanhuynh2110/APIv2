@@ -1,5 +1,6 @@
 module.exports = {
   CategoryService: require('./category'),
   ProductService: require('./product'),
-  ProductMasterService: require('./productMaster')
+  ProductMasterService: require('./productMaster'),
+  CategoryPostService: require('./categoryPost')
 }
