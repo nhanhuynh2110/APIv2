@@ -10,7 +10,7 @@ module.exports = function (router) {
     } catch (error) { return res.serverError(error.toString()) }
   })
 
-  router.get('/categoryPosts', (req, res) => {
+  router.get('/category-posts', (req, res) => {
     try {
       return CategoryPostService.getCategoryPostActive().then(res.OK).catch(res.serverError)
     } catch (error) { return res.serverError(error.toString()) }
