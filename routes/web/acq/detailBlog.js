@@ -7,7 +7,7 @@ const Models = require('../../../model/mongo')
 const { Post, CategoryPost } = Models
 
 module.exports = (router) => {
-  router.get('/detail', (req, res) => {
+  router.get('/detail-blog', (req, res) => {
     try {
       const { id } = req.query
 

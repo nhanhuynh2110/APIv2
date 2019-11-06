@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
 
-require('./thoitrang')(router)
+require('./acq')(router)
 
 module.exports = router
