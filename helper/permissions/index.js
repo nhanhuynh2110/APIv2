@@ -16,12 +16,28 @@ const permisions = {
       { key: 'ACCOUNTEDIT', text: 'Edit' }
     ]
   },
+  slide: {
+    label: 'Slide',
+    role: [
+      { key: 'SLIDEVIEW', text: 'View' },
+      { key: 'SLIDEADD', text: 'Add' },
+      { key: 'SLIDEEDIT', text: 'Edit' }
+    ]
+  },
   category: {
     label: 'Category',
     role: [
       { key: 'CATEGORYVIEW', text: 'View' },
       { key: 'CATEGORYADD', text: 'Add' },
       { key: 'CATEGORYEDIT', text: 'Edit' }
+    ]
+  },
+  categoryPost: {
+    label: 'Category Post',
+    role: [
+      { key: 'CATEGORYPOSTVIEW', text: 'View' },
+      { key: 'CATEGORYPOSTADD', text: 'Add' },
+      { key: 'CATEGORYPOSTEDIT', text: 'Edit' }
     ]
   },
   product: {

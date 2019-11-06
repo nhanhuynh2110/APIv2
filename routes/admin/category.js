@@ -1,10 +1,5 @@
 // const router = require('express').Router()
-var async = require('async')
-var ObjectId = require('mongoose').Types.ObjectId
-
 var utility = require('../../helper/utility')
-const Models = require('../../model/mongo')
-const {Category} = Models
 
 const {CategoryService} = require('../../services')
 

@@ -1,91 +1,67 @@
-var async = require('async')
-var ObjectId = require('mongoose').Types.ObjectId
-
 var utility = require('../../helper/utility')
-const Models = require('../../model/mongo')
-const { Post } = Models
+const {PostService} = require('../../services')
 
 module.exports = function (router) {
+  router.get('/posts', (req, res) => {
+    try {
+      return PostService.getProductActive().then(res.OK).catch(res.serverError)
+    } catch (error) { utility.apiResponse(res, 500, error.toString()) }
+  })
+
   router.get('/post', (req, res) => {
     try {
-      const { strKey, isDelete, pageSize, pageNumber, colSort, typeSort } = req.query
-      const query = {}
-      const sort = colSort && typeSort ? {
-        [colSort]: typeSort === 'asc' ? 1 : -1
-      } : null
-      if (strKey) { query['$text'] = { $search: strKey } }
-      query['isDelete'] = isDelete === 'true'
-      const total = (cb) => {
-        Post.count(query, (err, data) => cb(err, data))
-      }
-
-      const list = (cb) => {
-        let skip = parseInt(pageSize) * (parseInt(pageNumber) - 1)
-        let limit = parseInt(pageSize)
-        Post.find(query, (err, dt) => cb(err, dt)).skip(skip).limit(limit).sort(sort)
-      }
-
-      async.parallel({ total, list }, (error, data) => {
-        if (error) return utility.apiResponse(res, 500, error.toString())
-        return utility.apiResponse(res, 200, 'success', data)
+      const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
+      PostService.filter({
+        $searchKey: strKey,
+        isDelete: isDelete,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        colSort: colSort,
+        typeSort: typeSort
       })
-    } catch (error) { utility.apiResponse(res, 500, error.toString(), null) }
+        .then(res.OK)
+        .catch(res.serverError)
+    } catch (error) { return res.serverError(error) }
   })
 
-  router.get('/post/:id', (req, res) => {
+  router.get('/post/:id', async (req, res) => {
     try {
-      let { id } = req.params
-      Post.findOne({ _id: ObjectId(id) }, (error, data) => {
-        if (error) return utility.apiResponse(res, 500, error.toString())
-        return utility.apiResponse(res, 200, 'success', data)
-      })
-    } catch (error) { return utility.apiResponse(res, 500, error, null) }
+      let {id} = req.params
+      if (!id) return res.badRequest('request invalid')
+      const data = await PostService.detail(id)
+      if (!data) return res.notFound()
+      return res.OK(data)
+    } catch (error) { return res.serverError(error) }
   })
 
-  router.post('/post', (req, res) => {
+  router.post('/post', async (req, res) => {
     try {
-      let data = req.body
-      data['isDelete'] = false
-      let post = new Post(data)
-      var error = post.validateSync()
-
-      if (error) {
-        var errorKeys = Object.keys(error.errors)
-        return utility.apiResponse(res, 500, error.errors[errorKeys[0].message].toString())
-      }
-
-      post.save((err, data) => {
-        if (err) return utility.apiResponse(res, 500, err.toString())
-        return utility.apiResponse(res, 200, 'success', data)
-      })
-    } catch (e) {
-      console.log(e)
-      return utility.apiResponse(res, 500, 'server error')
-    }
+      const payload = req.body
+      if (!payload) return res.badRequest()
+      const post = await PostService.create(payload)
+      if (!post) return res.serverError(new Error('Create post Unsuccessful !!!'))
+      return res.OK(post)
+    } catch (e) { return res.serverError(e) }
   })
 
-  router.put('/post/:id', (req, res) => {
+  router.put('/post/:id', async (req, res) => {
     try {
-      let field = req.body
-      delete field.id
-      Post.findOneAndUpdate({ _id: ObjectId(req.params.id) }, field, { new: true }, (err, data) => {
-        if (err) return utility.apiResponse(res, 500, err.toString())
-        return utility.apiResponse(res, 200, 'success', data)
-      })
-    } catch (err) {
-      return utility.apiResponse(res, 500, err, null)
-    }
+      const payload = req.body
+      const {id} = req.params
+      if (!payload || !id) return res.badRequest()
+      const post = await PostService.updateById(id, payload)
+      if (!post) return res.notFound()
+      return res.OK(post)
+    } catch (err) { return res.serverError(err) }
   })
 
-  router.delete('/post/:id', (req, res) => {
+  router.delete('/post/:id', async (req, res) => {
     try {
       var { id } = req.params
-      Post.deleteOne({ _id: ObjectId(id) }, (err) => {
-        if (err) return utility.apiResponse(res, 500, err.toString())
-        return utility.apiResponse(res, 200, 'success', true)
-      })
-    } catch (error) {
-      utility.apiResponse(res, 500, 'Server error', null)
-    }
+      if (!id) return res.badRequest()
+      const post = await PostService.deleteById(id)
+      if (!post) return res.notFound()
+      else res.OK(true)
+    } catch (error) { return res.serverError(error) }
   })
 }
