@@ -8,7 +8,7 @@ const model = new Schema({
   image: { type: String, trim: true },
   gallery: { type: Array, trim: true },
   link: { type: String, trim: true },
-  categoryId: { type: Schema.Types.ObjectId, required: true },
+  categoryId: { type: Schema.Types.ObjectId, required: true, ref: 'category' },
   categoryParentId: { type: Schema.Types.ObjectId },
   price: {type: String, trim: true, required: true},
   priceSale: {type: String, trim: true},

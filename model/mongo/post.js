@@ -10,7 +10,7 @@ const model = new Schema({
   content: { type: String, trim: true },
   introImage: { type: String, trim: true },
   image: { type: String, trim: true },
-  categoryPostId: { type: Schema.Types.ObjectId, required: true },
+  categoryPostId: { type: Schema.Types.ObjectId, required: true, ref: 'categoryPost' },
 
   metaTitle: { type: String, trim: true },
   metaDescription: { type: String, trim: true },
