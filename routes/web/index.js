@@ -1,6 +1,9 @@
 var express = require('express')
 var router = express.Router()
 
-require('./thoitrang')(router)
+const { withAPI } = require('../middlewares')
+router.use(withAPI())
+
+require('./default')(router)
 
 module.exports = router

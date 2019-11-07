@@ -1,4 +1,5 @@
 module.exports = {
+  Website: require('./website'),
   CategoryService: require('./category'),
   ProductService: require('./product'),
   ProductMasterService: require('./productMaster'),
