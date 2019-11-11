@@ -154,7 +154,7 @@ const addRoleUser = (user, token, callback) => {
       phone: user.phone
     }
     if (err) return callback(null, data)
-    data.permissions = hasPermissions(role.permissions)
+    data.permissions = role && role.permissions ? hasPermissions(role.permissions) : {}
     return callback(null, data)
   })
 }
