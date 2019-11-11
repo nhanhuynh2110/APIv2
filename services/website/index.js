@@ -7,6 +7,7 @@ const {
   Category,
   CategoryPost,
   Contact,
+  ContactInfo,
   Gallery} = require('../../model/mongo')
 
 module.exports = {
@@ -20,8 +21,9 @@ module.exports = {
     const proNew = () => Product.find({ isActive: true, isDelete: false, isNewProduct: true }).populate('categoryId')
     const proHot = () => Product.find({ isActive: true, isDelete: false, isHot: true }).populate('categoryId')
     const galleries = () => Gallery.find({isActive: true, isDelete: false})
+    const contactInfo = () => ContactInfo.findOne({ isActive: true })
 
-    return utility.runParrallel([category, categoryPosts, proNew, proHot, galleries]).then(data => {
+    return utility.runParrallel([category, categoryPosts, proNew, proHot, galleries, contactInfo]).then(data => {
       const parallel = []
       const categoriesHome = data[0].all.filter(el => el.isHome)
       categoriesHome.forEach(cat => {
@@ -54,6 +56,7 @@ module.exports = {
           productNew: data[2],
           productHot: data[3],
           galleries: data[4],
+          contactInfo: data[5],
           categoryHome: dt
         }
       })
@@ -99,8 +102,8 @@ module.exports = {
     return Post.findOne({ _id: ObjectId(postId), isActive: true, isDelete: false, categoryPostId: ObjectId(categoryPostId) }).populate('categoryPostId')
   },
 
-  contact: ({ name, subject, email, message }) => {
-    const contact = new Contact({ name, subject, email, message })
+  contact: ({ name, subject, email, message, phone }) => {
+    const contact = new Contact({ name, subject, email, message, phone })
     return contact.save()
   }
 }

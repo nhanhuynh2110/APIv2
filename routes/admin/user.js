@@ -9,7 +9,7 @@ module.exports = (router) => {
   router.get('/user', (req, res) => {
     try {
       const {strKey, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
-      const query = {}
+      const query = {master: false}
       const sort = colSort && typeSort ? { [colSort]: typeSort === 'asc' ? 1 : -1 } : null
       if (strKey) { query['$text'] = { $search: strKey } }
       query['isDelete'] = isDelete === 'true'
@@ -76,7 +76,7 @@ module.exports = (router) => {
   router.delete('/user/:id', (req, res) => {
     try {
       var { id } = req.params
-      User.deleteOne({_id: ObjectId(id)}, (err) => {
+      User.deleteOne({_id: ObjectId(id), master: false}, (err) => {
         if (err) return utility.apiResponse(res, 500, err.toString())
         return utility.apiResponse(res, 200, 'success', true)
       })

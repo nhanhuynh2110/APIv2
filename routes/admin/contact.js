@@ -5,13 +5,11 @@ const {ContactService} = require('../../services')
 
 module.exports = function (router) {
   router.get('/contacts', (req, res) => {
-    console.log('get contacts')
     try {
       return ContactService.getContactActive().then(res.OK).catch(res.serverError)
     } catch (error) { return res.serverError(error.toString()) }
   })
   router.get('/contact', (req, res) => {
-    console.log('get contact')
     try {
       const {strKey, level, isDelete, pageSize, pageNumber, colSort, typeSort} = req.query
       return ContactService.filter({

@@ -15,6 +15,7 @@ const model = new Schema({
   gender: { type: Number },
   identityCard: { type: String },
   roleId: { type: Schema.Types.ObjectId },
+  master: {type: Boolean, default: false},
   isActive: { type: Boolean, default: false },
   isDelete: { type: Boolean, default: false },
   activeDate: { type: Date, default: Date.now() },

@@ -37,6 +37,7 @@ module.exports = () => {
           gender: 1,
           identityCard: null,
           roleId: role._id,
+          master: true,
           isActive: true
         })
         userSave.save((err, u) => {

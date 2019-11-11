@@ -2,7 +2,7 @@ var config = {
   PORT: 3100,
   createUser: true,
   mongoDB: {
-    connect: 'mongodb://localhost:27017/ACQ'
+    connect: 'mongodb://localhost:27017/ACQ1'
   },
   allowedOrigins: ['http://localhost:3030', 'http://localhost:3000', 'http://wland.vn'],
   options: {

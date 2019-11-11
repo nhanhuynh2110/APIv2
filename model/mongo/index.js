@@ -6,6 +6,7 @@ const Models = {
   CategoryPost: require('./categoryPost'),
   Post: require('./post'),
   Contact: require('./contact'),
+  ContactInfo: require('./contactInfo'),
   Role: require('./role'),
   Gallery: require('./gallery'),
   Product: require('./product'),
