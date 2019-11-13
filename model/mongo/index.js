@@ -11,6 +11,7 @@ const Models = {
   Gallery: require('./gallery'),
   Product: require('./product'),
   ProductMaster: require('./productMaster'),
+  Producer: require('./producer'),
   Advertise: require('./advertise'),
   Slide: require('./slide'),
   ProductSize: require('./productSize'),
